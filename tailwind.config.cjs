@@ -4,12 +4,10 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
-  },
-  plugins: [],
-  postcss: {
-    plugins: {
-      '@tailwindcss/postcss': {},
+    extend: {
+      fontFamily: {
+        pressstart: ['"Press Start 2P"', "cursive"],
+      },
     },
-  },
+  },  plugins: [],
 }

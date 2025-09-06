@@ -30,7 +30,7 @@ export function Keyboard({
       {rows.map((row, rowIndex) => (
         <div
           key={`row-${rowIndex}`}
-          className="flex justify-center gap-2 w-full"
+          className="flex justify-center gap-3 w-full"
         >
           {row.map((letter) => {
             const isGuessed = guessedLetters.includes(letter.toLowerCase());
@@ -40,7 +40,7 @@ export function Keyboard({
                 variant={isGuessed ? "outline" : "secondary"}
                 size="sm"
                 className={cn(
-                  "w-12 h-12 font-pixel text-xl rounded-none",
+                  "w-16 h-16 font-pixel text-2xl rounded-none bg-[#f4a45d] hover:bg-[#f4a45d]/80 text-black",
                   isGuessed && "opacity-50 cursor-not-allowed"
                 )}
                 disabled={isGuessed || disabled}
