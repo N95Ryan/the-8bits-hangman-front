@@ -81,7 +81,7 @@ export function GameBoard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 p-4 w-full h-full">
+    <div className="flex flex-col items-center justify-center gap-6 p-2 w-full h-full">
       {showWelcome ? (
         <WelcomePage onStartGame={startNewGame} />
       ) : (
