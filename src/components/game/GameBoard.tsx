@@ -81,12 +81,12 @@ export function GameBoard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 p-2 w-full h-full">
+    <div className="flex flex-col items-center justify-center gap-6 p-4 w-full max-w-2xl">
       {showWelcome ? (
         <WelcomePage onStartGame={startNewGame} />
       ) : (
         <>
-          <div className="flex justify-between w-full max-w-md">
+          <div className="flex justify-between w-full">
             <Button
               variant="primary"
               onClick={startNewGame}
@@ -102,14 +102,14 @@ export function GameBoard() {
           <WordDisplay
             word={maskedWord}
             guessedLetters={[]}
-            className="mx-auto my-4"
+            className="w-full my-4"
           />
 
           <Keyboard
             onKeyPress={handleGuess}
             guessedLetters={guessedLetters}
             disabled={gameStatus !== "playing" || isLoading}
-            className="mx-auto mt-2"
+            className="w-full mt-2"
           />
         </>
       )}

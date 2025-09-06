@@ -27,3 +27,6 @@ dist-ssr
 ai-agents/
 doc_audit.txt
 frontend.txt
+
+# vercel
+vercel.json

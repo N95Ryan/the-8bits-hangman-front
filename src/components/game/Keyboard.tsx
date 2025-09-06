@@ -28,7 +28,10 @@ export function Keyboard({
       )}
     >
       {rows.map((row, rowIndex) => (
-        <div key={`row-${rowIndex}`} className="flex justify-center gap-2">
+        <div
+          key={`row-${rowIndex}`}
+          className="flex justify-center gap-2 w-full"
+        >
           {row.map((letter) => {
             const isGuessed = guessedLetters.includes(letter.toLowerCase());
             return (
