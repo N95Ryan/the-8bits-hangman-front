@@ -8,11 +8,18 @@ interface WordDisplayProps {
 
 export function WordDisplay({
   word,
-  guessedLetters,
+  // guessedLetters est utilisé pour la validation mais pas encore implémenté
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // guessedLetters,
   className,
 }: WordDisplayProps) {
   return (
-    <div className={cn("flex flex-wrap justify-center gap-3 my-6", className)}>
+    <div
+      className={cn(
+        "flex flex-wrap justify-center gap-3 my-6 w-full",
+        className
+      )}
+    >
       {word.split("").map((letter, index) => {
         // If the character is an underscore, it's a letter not yet guessed
         const isUnderscore = letter === "_";

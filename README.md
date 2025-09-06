@@ -1,4 +1,4 @@
-# The 8Bit Hangman - Frontend 🎮
+# The 8Bits Hangman - Frontend 🎮
 
 A retro pixel-art Hangman game built with React and TypeScript using Vite.
 
