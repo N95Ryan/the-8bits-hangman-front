@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { GameBoard } from "./components/game/GameBoard";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+      <header className="mb-6">
+        <h1 className="text-4xl md:text-6xl font-pixel text-center text-cyan-400 tracking-wider animate-pulse">
+          8bit <span className="text-pink-500">Hangman</span>
+        </h1>
+      </header>
+
+      <main className="w-full max-w-lg mx-auto bg-gray-800 border-2 border-cyan-400 p-6 shadow-[8px_8px_0px_rgba(0,0,0,0.8)] flex-1 flex items-center justify-center">
+        <GameBoard />
+      </main>
+
+      <footer className="mt-6 text-sm text-gray-400">
+        <p className="font-pixel">Pixel Art Hangman &copy; 2025</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
