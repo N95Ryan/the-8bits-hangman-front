@@ -82,11 +82,12 @@ export function GameBoard() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-4 w-full max-w-2xl">
+      {!showWelcome && <LivesDisplay lives={lives} maxLives={MAX_LIVES} />}
       {showWelcome ? (
         <WelcomePage onStartGame={startNewGame} />
       ) : (
         <>
-          <div className="flex justify-between w-full">
+          <div className="flex justify-start w-full">
             <Button
               variant="primary"
               onClick={startNewGame}
@@ -94,7 +95,6 @@ export function GameBoard() {
             >
               New Game
             </Button>
-            <LivesDisplay lives={lives} maxLives={MAX_LIVES} />
           </div>
 
           <HangmanDisplay mistakes={MAX_LIVES - lives} className="my-4" />
@@ -122,12 +122,14 @@ export function GameBoard() {
                 gameStatus === "won" ? "text-green-400" : "text-pink-500"
               }
             >
-              {gameStatus === "won" ? "🎉 You Won!" : "💀 Game Over..."}
+              {gameStatus === "won" ? "You Won ! 🎉" : "Game Over ! 💀"}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4 font-pixel">
             {gameStatus === "lost" && (
-              <p className="text-center">The word wasn't found!</p>
+              <p className="text-center text-white text-l">
+                The word wasn't found...
+              </p>
             )}
           </div>
           <DialogFooter className="flex justify-center">

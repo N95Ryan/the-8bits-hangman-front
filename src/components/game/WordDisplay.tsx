@@ -6,17 +6,11 @@ interface WordDisplayProps {
   className?: string;
 }
 
-export function WordDisplay({
-  word,
-  // guessedLetters est utilisé pour la validation mais pas encore implémenté
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // guessedLetters,
-  className,
-}: WordDisplayProps) {
+export function WordDisplay({ word, className }: WordDisplayProps) {
   return (
     <div
       className={cn(
-        "flex flex-wrap justify-center gap-3 my-6 w-full",
+        "flex flex-wrap justify-center gap-4 my-8 w-full",
         className
       )}
     >
@@ -27,12 +21,12 @@ export function WordDisplay({
         return (
           <div
             key={`letter-${index}`}
-            className="flex items-center justify-center w-12 h-14 border-b-4 border-cyan-400"
+            className="flex items-center justify-center w-16 h-20 border-b-4 border-[#f4a45d]"
           >
             <span
               className={cn(
-                "text-3xl font-pixel uppercase",
-                isUnderscore ? "invisible" : "text-green-400"
+                "text-4xl font-pressstart uppercase",
+                isUnderscore ? "invisible" : "text-[#f4a45d]"
               )}
             >
               {isUnderscore ? "X" : letter}
