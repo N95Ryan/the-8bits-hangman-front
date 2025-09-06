@@ -46,9 +46,7 @@ button {
   transition: all 0.15s ease;
 }
 
-.shadow-pixel {
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
-}
+/* Utiliser les classes Tailwind pour les ombres */
 
 /* Animation pour effet d'arcade */
 @keyframes neon-pulse {

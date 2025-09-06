@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { WordDisplay } from "./WordDisplay";
 import { Keyboard } from "./Keyboard";
 import { LivesDisplay } from "./LivesDisplay";
@@ -81,12 +81,12 @@ export function GameBoard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 p-4 w-full h-full">
+    <div className="flex flex-col items-center justify-center gap-6 p-4 w-full h-full">
       {showWelcome ? (
         <WelcomePage onStartGame={startNewGame} />
       ) : (
         <>
-          <div className="flex justify-between w-full max-w-md mb-2">
+          <div className="flex justify-between w-full max-w-md">
             <Button
               variant="primary"
               onClick={startNewGame}
@@ -97,14 +97,19 @@ export function GameBoard() {
             <LivesDisplay lives={lives} maxLives={MAX_LIVES} />
           </div>
 
-          <HangmanDisplay mistakes={MAX_LIVES - lives} />
+          <HangmanDisplay mistakes={MAX_LIVES - lives} className="my-4" />
 
-          <WordDisplay word={maskedWord} guessedLetters={[]} />
+          <WordDisplay
+            word={maskedWord}
+            guessedLetters={[]}
+            className="mx-auto my-4"
+          />
 
           <Keyboard
             onKeyPress={handleGuess}
             guessedLetters={guessedLetters}
             disabled={gameStatus !== "playing" || isLoading}
+            className="mx-auto mt-2"
           />
         </>
       )}
@@ -125,11 +130,12 @@ export function GameBoard() {
               <p className="text-center">The word wasn't found!</p>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex justify-center">
             <Button
               variant="primary"
               onClick={startNewGame}
               disabled={isLoading}
+              className="mx-auto"
             >
               Play Again
             </Button>
