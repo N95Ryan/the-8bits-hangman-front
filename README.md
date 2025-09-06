@@ -24,8 +24,7 @@ A retro pixel-art Hangman game built with React and TypeScript using Vite.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/8bit-hangman-front.git
-cd 8bit-hangman-front
+git clone https://github.com/N95Ryan/the-8bits-hangman-front.git
 
 # Install dependencies
 yarn
