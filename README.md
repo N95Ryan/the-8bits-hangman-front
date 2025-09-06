@@ -13,12 +13,12 @@ A retro pixel-art Hangman game built with React and TypeScript using Vite.
 
 ## Tech Stack 🖥️
 
-- React 18 + TypeScript
-- Vite (Fast Refresh + HMR)
-- Tailwind CSS for styling
-- Class Variance Authority for component variants
-- Radix UI for accessible dialog components
-- Custom pixel-art animations
+- React 19 + TypeScript
+- Vite 7 (Fast Refresh + HMR)
+- Tailwind CSS 4 pour le styling
+- Class Variance Authority pour les variantes de composants
+- Radix UI pour les composants de dialogue accessibles
+- Animations pixel-art personnalisées
 
 ## Getting Started 🚀
 
