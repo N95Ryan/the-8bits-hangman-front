@@ -8,14 +8,10 @@ export function WelcomePage({ onStartGame }: WelcomePageProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <div className="text-center">
-        <img
-          src="/src/assets/logo.png"
-          alt="The 8bits Hangman"
-          className="logo"
-        />
+        <img src="/logo.png" alt="The 8bits Hangman" className="logo" />
       </div>
 
-      <div className="mt-12">
+      <div>
         <NewGameButton onClick={onStartGame}>New Game</NewGameButton>
       </div>
     </div>
