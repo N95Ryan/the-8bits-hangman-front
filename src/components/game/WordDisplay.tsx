@@ -10,7 +10,7 @@ export function WordDisplay({
   word,
   // guessedLetters est utilisé pour la validation mais pas encore implémenté
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  guessedLetters,
+  // guessedLetters,
   className,
 }: WordDisplayProps) {
   return (
