@@ -21,9 +21,14 @@ export function Keyboard({
   ];
 
   return (
-    <div className={cn("flex flex-col items-center gap-3", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-3 w-full",
+        className
+      )}
+    >
       {rows.map((row, rowIndex) => (
-        <div key={`row-${rowIndex}`} className="flex gap-2">
+        <div key={`row-${rowIndex}`} className="flex justify-center gap-2">
           {row.map((letter) => {
             const isGuessed = guessedLetters.includes(letter.toLowerCase());
             return (
@@ -32,7 +37,7 @@ export function Keyboard({
                 variant={isGuessed ? "outline" : "secondary"}
                 size="sm"
                 className={cn(
-                  "w-12 h-12 font-pixel text-xl rounded-none transition-all",
+                  "w-12 h-12 font-pixel text-xl rounded-none",
                   isGuessed && "opacity-50 cursor-not-allowed"
                 )}
                 disabled={isGuessed || disabled}

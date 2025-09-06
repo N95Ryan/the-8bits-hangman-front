@@ -12,7 +12,7 @@ export function WordDisplay({
   className,
 }: WordDisplayProps) {
   return (
-    <div className={cn("flex flex-wrap justify-center gap-3 my-8", className)}>
+    <div className={cn("flex flex-wrap justify-center gap-3 my-6", className)}>
       {word.split("").map((letter, index) => {
         // If the character is an underscore, it's a letter not yet guessed
         const isUnderscore = letter === "_";
@@ -20,7 +20,7 @@ export function WordDisplay({
         return (
           <div
             key={`letter-${index}`}
-            className="inline-flex items-center justify-center w-12 h-14 border-b-4 border-cyan-400"
+            className="flex items-center justify-center w-12 h-14 border-b-4 border-cyan-400"
           >
             <span
               className={cn(

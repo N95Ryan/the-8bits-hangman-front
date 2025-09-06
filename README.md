@@ -1,25 +1,47 @@
-# 8Bit Hangman - Frontend 🎮
+# The 8Bit Hangman - Frontend 🎮
 
 A retro pixel-art Hangman game built with React and TypeScript using Vite.
 
-## Goal
+## Features ✨
 
-Create an interactive web version of Hangman with a pixel-art style.
+- Pixel-art retro style with 8-bit aesthetics
+- Responsive design that works on desktop and mobile
+- Keyboard support for letter input
+- Visual hangman display that updates with each wrong guess
+- Game state management (win/lose conditions)
+- Animated UI elements for a more engaging experience
 
 ## Tech Stack 🖥️
 
-- React + TypeScript
+- React 18 + TypeScript
 - Vite (Fast Refresh + HMR)
-- Tailwind CSS
-- ShadCN UI (optional for reusable components)
-- Zustand or Context API for state management
+- Tailwind CSS for styling
+- Class Variance Authority for component variants
+- Radix UI for accessible dialog components
+- Custom pixel-art animations
 
-## Getting Started
+## Getting Started 🚀
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/8bit-hangman-front.git
+cd 8bit-hangman-front
+
 # Install dependencies
 yarn
 
 # Start development server
 yarn dev
+```
+
+## Deployment 🌐
+
+The application can be deployed to Vercel, Netlify, or any other static site hosting:
+
+```bash
+# Build for production
+yarn build
+
+# Preview the production build locally
+yarn preview
 ```
