@@ -2,7 +2,7 @@ interface Game {
   id: string;
   lettersGuessed: string[];
   attemptsLeft: number;
-  status: 'playing' | 'won' | 'lost';
+  status: 'in_progress' | 'playing' | 'won' | 'lost';
   maskedWord: string;
 }
 
@@ -12,10 +12,11 @@ interface GuessRequest {
 
 // URL de base de l'API
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-const USE_REAL_API = import.meta.env.VITE_USE_REAL_API === 'true';
+// Force le mode simulation en développement local pour éviter les erreurs CORS
+const USE_REAL_API = false; // Temporairement désactivé à cause des erreurs CORS
 
 // Crée une nouvelle partie
-export async function createNewGame(): Promise<Game> {
+export async function createNewGame(difficulty: 'easy' | 'medium' | 'hard' = 'medium'): Promise<Game> {
   if (USE_REAL_API) {
     const response = await fetch(`${API_URL}/game/new`, {
       method: 'POST',
@@ -31,12 +32,19 @@ export async function createNewGame(): Promise<Game> {
     return response.json();
   } else {
     // Version simulée pour le développement sans backend
+    // Nombre de vies selon la difficulté
+    const livesMap = {
+      'easy': 5,
+      'medium': 3,
+      'hard': 2 
+    };
+    
     return {
       id: Math.floor(Math.random() * 999999).toString(),
       lettersGuessed: [],
-      attemptsLeft: 6,
+      attemptsLeft: livesMap[difficulty],
       status: 'playing',
-      maskedWord: getRandomMaskedWord(),
+      maskedWord: getRandomMaskedWord(difficulty),
     };
   }
 }
@@ -91,10 +99,29 @@ const wordList = [
 // Mot actuel pour la simulation (choisi aléatoirement)
 let currentSimulatedWord = '';
 
-// Génère un mot masqué aléatoire pour la simulation
-function getRandomMaskedWord(): string {
-  const randomIndex = Math.floor(Math.random() * wordList.length);
-  currentSimulatedWord = wordList[randomIndex];
+// Génère un mot masqué aléatoire pour la simulation selon la difficulté
+function getRandomMaskedWord(difficulty: 'easy' | 'medium' | 'hard' = 'medium'): string {
+  // Filtrer les mots selon la difficulté
+  let filteredWords = wordList;
+  
+  if (difficulty === 'easy') {
+    // Mots courts (4-6 lettres)
+    filteredWords = wordList.filter(word => word.length >= 4 && word.length <= 6);
+  } else if (difficulty === 'medium') {
+    // Mots moyens (7-9 lettres)
+    filteredWords = wordList.filter(word => word.length >= 7 && word.length <= 9);
+  } else {
+    // Mots longs (10+ lettres)
+    filteredWords = wordList.filter(word => word.length >= 10);
+  }
+  
+  // Si aucun mot ne correspond aux critères, utiliser la liste complète
+  if (filteredWords.length === 0) {
+    filteredWords = wordList;
+  }
+  
+  const randomIndex = Math.floor(Math.random() * filteredWords.length);
+  currentSimulatedWord = filteredWords[randomIndex];
   return '_'.repeat(currentSimulatedWord.length);
 }
 
