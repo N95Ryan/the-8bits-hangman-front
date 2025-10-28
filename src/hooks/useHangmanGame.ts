@@ -11,13 +11,8 @@ import {
   LeaderboardEntry
 } from '@/services/gameService';
 import { isAuthenticated } from '@/services/api';
-
-// Number of attempts by difficulty (aligned with backend)
-const LIVES_BY_DIFFICULTY = {
-  easy: 8,
-  medium: 6,
-  hard: 5,
-};
+import { LIVES_BY_DIFFICULTY } from '@/constants/lives';
+import type { Difficulty, GameStatus } from '@/constants/lives';
 
 export interface HangmanGameState {
   gameId: string;
@@ -25,8 +20,8 @@ export interface HangmanGameState {
   guessedLetters: string[];
   lives: number;
   maxLives: number;
-  difficulty: 'easy' | 'medium' | 'hard';
-  gameStatus: 'in_progress' | 'won' | 'lost';
+  difficulty: Difficulty;
+  gameStatus: GameStatus;
   hint: string;
   showHint: boolean;
   isLoading: boolean;
@@ -73,7 +68,7 @@ export function useHangmanGame() {
   // Start a new game
   const startNewGame = useCallback(async (
     playerName: string = 'Player',
-    selectedDifficulty: 'easy' | 'medium' | 'hard' = 'medium'
+    selectedDifficulty: Difficulty = 'medium'
   ) => {
     try {
       setState(prevState => ({ 

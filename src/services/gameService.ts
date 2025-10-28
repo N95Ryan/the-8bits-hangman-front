@@ -15,8 +15,11 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 // Force le mode simulation en développement local pour éviter les erreurs CORS
 const USE_REAL_API = false; // Temporairement désactivé à cause des erreurs CORS
 
+import { LIVES_BY_DIFFICULTY } from '@/constants/lives';
+import type { Difficulty } from '@/constants/lives';
+
 // Crée une nouvelle partie
-export async function createNewGame(difficulty: 'easy' | 'medium' | 'hard' = 'medium'): Promise<Game> {
+export async function createNewGame(difficulty: Difficulty = 'medium'): Promise<Game> {
   if (USE_REAL_API) {
     const response = await fetch(`${API_URL}/game/new`, {
       method: 'POST',
@@ -32,17 +35,10 @@ export async function createNewGame(difficulty: 'easy' | 'medium' | 'hard' = 'me
     return response.json();
   } else {
     // Version simulée pour le développement sans backend
-    // Nombre de vies selon la difficulté
-    const livesMap = {
-      'easy': 5,
-      'medium': 3,
-      'hard': 2 
-    };
-    
     return {
       id: Math.floor(Math.random() * 999999).toString(),
       lettersGuessed: [],
-      attemptsLeft: livesMap[difficulty],
+      attemptsLeft: LIVES_BY_DIFFICULTY[difficulty],
       status: 'playing',
       maskedWord: getRandomMaskedWord(difficulty),
     };

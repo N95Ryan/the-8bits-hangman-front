@@ -8,26 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Difficulty } from "@/constants/lives";
 
 interface WelcomePageProps {
-  onStartGame: (
-    playerName: string,
-    difficulty: "easy" | "medium" | "hard"
-  ) => void;
+  onStartGame: (playerName: string, difficulty: Difficulty) => void;
+  initialPlayerName?: string;
+  initialDifficulty?: Difficulty;
+  isLoading?: boolean;
 }
 
-export function WelcomePage({ onStartGame }: WelcomePageProps) {
-  const [playerName, setPlayerName] = useState<string>("Player");
-  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
-    "medium"
-  );
-
-  // Définition des vies par difficulté
-  const livesByDifficulty = {
-    easy: 8,
-    medium: 6,
-    hard: 5,
-  };
+export function WelcomePage({
+  onStartGame,
+  initialPlayerName = "Player",
+  initialDifficulty = "medium",
+  isLoading = false,
+}: WelcomePageProps) {
+  const [playerName, setPlayerName] = useState<string>(initialPlayerName);
+  const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
@@ -54,9 +51,7 @@ export function WelcomePage({ onStartGame }: WelcomePageProps) {
           </label>
           <Select
             value={difficulty}
-            onValueChange={(value) =>
-              setDifficulty(value as "easy" | "medium" | "hard")
-            }
+            onValueChange={(value) => setDifficulty(value as Difficulty)}
           >
             <SelectTrigger className="w-full text-white">
               <SelectValue />
@@ -70,10 +65,17 @@ export function WelcomePage({ onStartGame }: WelcomePageProps) {
         </div>
 
         <NewGameButton
-          onClick={() => onStartGame(playerName, difficulty)}
+          onClick={() => {
+            console.log('Button clicked, isLoading:', isLoading);
+            if (!isLoading) {
+              console.log('Calling onStartGame with:', { playerName, difficulty });
+              onStartGame(playerName, difficulty);
+            }
+          }}
           className="w-full"
+          disabled={isLoading}
         >
-          Start Game
+          {isLoading ? "Starting..." : "Start Game"}
         </NewGameButton>
       </div>
     </div>

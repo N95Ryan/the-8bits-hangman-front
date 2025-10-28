@@ -13,17 +13,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { createNewGame, makeGuess } from "@/services/gameService";
-
-// Nombre de vies par difficulté
-const LIVES_BY_DIFFICULTY = {
-  easy: 5,
-  medium: 3,
-  hard: 2,
-};
+import { LIVES_BY_DIFFICULTY } from "@/constants/lives";
+import type { Difficulty, GameStatus } from "@/constants/lives";
 
 interface GameBoardProps {
   initialPlayerName?: string;
-  initialDifficulty?: "easy" | "medium" | "hard";
+  initialDifficulty?: Difficulty;
   onBackToWelcome?: () => void;
 }
 
@@ -35,14 +30,12 @@ export function GameBoard({
   const [gameId, setGameId] = useState<string>("");
   const [maskedWord, setMaskedWord] = useState<string>("");
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
-  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
-    initialDifficulty
-  );
+  const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty);
   const [playerName, setPlayerName] = useState<string>(initialPlayerName);
-  const [lives, setLives] = useState(LIVES_BY_DIFFICULTY[initialDifficulty]);
-  const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">(
-    "playing"
+  const [lives, setLives] = useState<number>(
+    LIVES_BY_DIFFICULTY[initialDifficulty]
   );
+  const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [showDialog, setShowDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -50,20 +43,25 @@ export function GameBoard({
   // Don't initialize game automatically, wait for user to click "New Game"
 
   // Start a new game
-  const startNewGame = async () => {
+  const startNewGame = async (
+    selectedDifficulty?: Difficulty,
+    selectedPlayerName?: string
+  ) => {
+    const gameDifficulty = selectedDifficulty || difficulty;
+    const gamePlayerName = selectedPlayerName || playerName;
     try {
       setIsLoading(true);
       console.log(
-        `Creating new game with difficulty: ${difficulty}, player: ${playerName}...`
+        `Creating new game with difficulty: ${gameDifficulty}, player: ${gamePlayerName}...`
       );
-      const newGame = await createNewGame(difficulty);
+      const newGame = await createNewGame(gameDifficulty);
       console.log("New game created:", newGame);
 
       setGameId(newGame.id);
       setMaskedWord(newGame.maskedWord);
       // Adapter les propriétés du backend au format attendu par le composant
       setGuessedLetters(newGame.lettersGuessed || []);
-      setLives(newGame.attemptsLeft || LIVES_BY_DIFFICULTY[difficulty]);
+      setLives(newGame.attemptsLeft || LIVES_BY_DIFFICULTY[gameDifficulty]);
       // Convertir le status du backend au format attendu par le composant
       if (newGame.status === "in_progress") {
         setGameStatus("playing");
@@ -124,19 +122,19 @@ export function GameBoard({
 
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-4 w-full max-w-2xl">
-      {!showWelcome && (
-        <LivesDisplay
-          lives={lives}
-          maxLives={LIVES_BY_DIFFICULTY[difficulty]}
-        />
-      )}
+      {!showWelcome && <LivesDisplay lives={lives} difficulty={difficulty} />}
       {showWelcome ? (
         <WelcomePage
+          initialPlayerName={playerName}
+          initialDifficulty={difficulty}
+          isLoading={isLoading}
           onStartGame={(name, selectedDifficulty) => {
+            if (isLoading) return; // Éviter les appels multiples
             setPlayerName(name);
             setDifficulty(selectedDifficulty);
             setLives(LIVES_BY_DIFFICULTY[selectedDifficulty]);
-            startNewGame();
+            // Utiliser directement les valeurs passées au lieu de l'état
+            startNewGame(selectedDifficulty, name);
           }}
         />
       ) : (
@@ -144,7 +142,10 @@ export function GameBoard({
           <div className="flex justify-between w-full mb-4">
             <Button
               variant="outline"
-              onClick={onBackToWelcome}
+              onClick={() => {
+                setShowWelcome(true);
+                onBackToWelcome();
+              }}
               disabled={isLoading}
               className="flex-1 ml-2 text-black bg-[#f4a45d] hover:bg-[#f4a45d]/80"
             >
@@ -152,7 +153,7 @@ export function GameBoard({
             </Button>
             <Button
               variant="primary"
-              onClick={startNewGame}
+              onClick={() => startNewGame()}
               disabled={isLoading}
               className="flex-1 mr-2"
             >
@@ -201,7 +202,7 @@ export function GameBoard({
           <DialogFooter className="flex justify-center">
             <Button
               variant="primary"
-              onClick={startNewGame}
+              onClick={() => startNewGame()}
               disabled={isLoading}
               className="mx-auto"
             >
