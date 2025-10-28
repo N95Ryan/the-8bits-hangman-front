@@ -66,9 +66,12 @@ export function WelcomePage({
 
         <NewGameButton
           onClick={() => {
-            console.log('Button clicked, isLoading:', isLoading);
+            console.log("Button clicked, isLoading:", isLoading);
             if (!isLoading) {
-              console.log('Calling onStartGame with:', { playerName, difficulty });
+              console.log("Calling onStartGame with:", {
+                playerName,
+                difficulty,
+              });
               onStartGame(playerName, difficulty);
             }
           }}

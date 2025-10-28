@@ -1,9 +1,24 @@
-interface Game {
+export interface Game {
   id: string;
   lettersGuessed: string[];
   attemptsLeft: number;
   status: 'in_progress' | 'playing' | 'won' | 'lost';
   maskedWord: string;
+  // Propriétés supplémentaires pour la compatibilité
+  guesses?: string[];
+  remaining?: number;
+  hint?: string;
+  score?: number;
+  difficulty?: 'easy' | 'medium' | 'hard';
+}
+
+export interface LeaderboardEntry {
+  player_id: string;
+  player_name: string;
+  score: number;
+  word_length: number;
+  remaining_attempts: number;
+  difficulty: 'easy' | 'medium' | 'hard';
 }
 
 interface GuessRequest {
@@ -19,7 +34,7 @@ import { LIVES_BY_DIFFICULTY } from '@/constants/lives';
 import type { Difficulty } from '@/constants/lives';
 
 // Crée une nouvelle partie
-export async function createNewGame(difficulty: Difficulty = 'medium'): Promise<Game> {
+export async function createNewGame(playerName: string = 'Player', difficulty: Difficulty = 'medium'): Promise<Game> {
   if (USE_REAL_API) {
     const response = await fetch(`${API_URL}/game/new`, {
       method: 'POST',
@@ -35,12 +50,19 @@ export async function createNewGame(difficulty: Difficulty = 'medium'): Promise<
     return response.json();
   } else {
     // Version simulée pour le développement sans backend
+    console.log(`Creating new game for player: ${playerName} with difficulty: ${difficulty}`);
     return {
       id: Math.floor(Math.random() * 999999).toString(),
       lettersGuessed: [],
       attemptsLeft: LIVES_BY_DIFFICULTY[difficulty],
       status: 'playing',
       maskedWord: getRandomMaskedWord(difficulty),
+      // Propriétés supplémentaires pour la compatibilité
+      guesses: [],
+      remaining: LIVES_BY_DIFFICULTY[difficulty],
+      hint: '',
+      score: 0,
+      difficulty: difficulty
     };
   }
 }
@@ -62,7 +84,7 @@ export async function getGame(gameId: string): Promise<Game> {
 }
 
 // Fait une tentative de devinette
-export async function makeGuess(gameId: string, letter: string, currentGame: Game): Promise<Game> {
+export async function makeGuess(gameId: string, letter: string, currentGame?: Game): Promise<Game> {
   if (USE_REAL_API) {
     const request: GuessRequest = { letter };
     
@@ -81,6 +103,9 @@ export async function makeGuess(gameId: string, letter: string, currentGame: Gam
     return response.json();
   } else {
     // Version simulée pour le développement sans backend
+    if (!currentGame) {
+      throw new Error('Game state required for simulation');
+    }
     return simulateGuess(letter, currentGame);
   }
 }
@@ -160,4 +185,99 @@ function simulateGuess(letter: string, game: Game): Game {
   }
 
   return updatedGame;
+}
+
+// Récupère un indice pour la partie
+export async function getHint(gameId: string): Promise<string> {
+  if (USE_REAL_API) {
+    const response = await fetch(`${API_URL}/game/${gameId}/hint`);
+    
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération de l\'indice');
+    }
+    
+    const data = await response.json();
+    return data.hint || '';
+  } else {
+    // Version simulée - retourne un indice basé sur le mot actuel
+    return `Le mot contient ${currentSimulatedWord.length} lettres et commence par "${currentSimulatedWord[0]}"`;
+  }
+}
+
+// Abandonne la partie en cours
+export async function abandonGame(gameId: string): Promise<void> {
+  if (USE_REAL_API) {
+    const response = await fetch(`${API_URL}/game/${gameId}/abandon`, {
+      method: 'POST',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Erreur lors de l\'abandon de la partie');
+    }
+  } else {
+    // Version simulée - ne fait rien
+    console.log('Game abandoned in simulation mode');
+  }
+}
+
+// Récupère le classement
+export async function getLeaderboard(difficulty?: string): Promise<LeaderboardEntry[]> {
+  if (USE_REAL_API) {
+    const url = difficulty ? `${API_URL}/leaderboard?difficulty=${difficulty}` : `${API_URL}/leaderboard`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération du classement');
+    }
+    
+    return response.json();
+  } else {
+    // Version simulée - retourne des données fictives
+    return [
+      {
+        player_id: '1',
+        player_name: 'Player1',
+        score: 1000,
+        word_length: 5,
+        remaining_attempts: 3,
+        difficulty: 'easy'
+      },
+      {
+        player_id: '2',
+        player_name: 'Player2',
+        score: 800,
+        word_length: 7,
+        remaining_attempts: 1,
+        difficulty: 'medium'
+      },
+      {
+        player_id: '3',
+        player_name: 'Player3',
+        score: 600,
+        word_length: 10,
+        remaining_attempts: 0,
+        difficulty: 'hard'
+      }
+    ];
+  }
+}
+
+// Soumet un score au classement
+export async function submitScore(gameId: string, userId: string): Promise<void> {
+  if (USE_REAL_API) {
+    const response = await fetch(`${API_URL}/score`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ gameId, userId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Erreur lors de la soumission du score');
+    }
+  } else {
+    // Version simulée - ne fait rien
+    console.log('Score submitted in simulation mode');
+  }
 }

@@ -7,8 +7,8 @@ import {
   abandonGame,
   getLeaderboard,
   submitScore,
-  Game,
-  LeaderboardEntry
+  type Game,
+  type LeaderboardEntry
 } from '@/services/gameService';
 import { isAuthenticated } from '@/services/api';
 import { LIVES_BY_DIFFICULTY } from '@/constants/lives';
@@ -55,8 +55,8 @@ export function useHangmanGame() {
       ...prevState,
       gameId: gameData.id,
       maskedWord: gameData.maskedWord,
-      guessedLetters: gameData.guesses || [],
-      lives: gameData.remaining,
+      guessedLetters: gameData.guesses || gameData.lettersGuessed || [],
+      lives: gameData.remaining || gameData.attemptsLeft || prevState.lives,
       gameStatus: gameData.status,
       hint: gameData.hint || prevState.hint,
       score: gameData.score || 0,
@@ -85,8 +85,8 @@ export function useHangmanGame() {
         ...prevState,
         gameId: newGame.id,
         maskedWord: newGame.maskedWord,
-        guessedLetters: newGame.guesses || [],
-        lives: newGame.remaining,
+        guessedLetters: newGame.guesses || newGame.lettersGuessed || [],
+        lives: newGame.remaining || newGame.attemptsLeft || maxLives,
         maxLives,
         difficulty: selectedDifficulty,
         gameStatus: newGame.status,
@@ -122,6 +122,24 @@ export function useHangmanGame() {
     }
   }, [updateGameState]);
 
+  // Fetch leaderboard data
+  const fetchLeaderboard = useCallback(async (difficulty?: string) => {
+    try {
+      setState(prevState => ({ ...prevState, isLoading: true }));
+      const leaderboardData = await getLeaderboard(difficulty);
+      setState(prevState => ({ 
+        ...prevState, 
+        leaderboard: leaderboardData,
+        isLoading: false 
+      }));
+      return leaderboardData;
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+      setState(prevState => ({ ...prevState, isLoading: false }));
+      throw error;
+    }
+  }, []);
+
   // Make a letter guess
   const handleGuess = useCallback(async (letter: string) => {
     if (state.gameStatus !== 'in_progress' || state.isLoading) return;
@@ -129,7 +147,18 @@ export function useHangmanGame() {
     try {
       setState(prevState => ({ ...prevState, isLoading: true }));
 
-      const updatedGame = await makeGuess(state.gameId, letter);
+      const updatedGame = await makeGuess(state.gameId, letter, {
+        id: state.gameId,
+        lettersGuessed: state.guessedLetters,
+        attemptsLeft: state.lives,
+        status: state.gameStatus,
+        maskedWord: state.maskedWord,
+        guesses: state.guessedLetters,
+        remaining: state.lives,
+        hint: state.hint,
+        score: state.score,
+        difficulty: state.difficulty
+      });
       updateGameState(updatedGame);
 
       // If game ended, fetch leaderboard
@@ -143,7 +172,7 @@ export function useHangmanGame() {
       setState(prevState => ({ ...prevState, isLoading: false }));
       throw error;
     }
-  }, [state.gameId, state.gameStatus, state.isLoading, updateGameState]);
+  }, [state.gameId, state.gameStatus, state.isLoading, state.difficulty, state.guessedLetters, state.hint, state.lives, state.maskedWord, state.score, updateGameState, fetchLeaderboard]);
 
   // Get a hint
   const fetchHint = useCallback(async () => {
@@ -188,7 +217,7 @@ export function useHangmanGame() {
       setState(prevState => ({ ...prevState, isLoading: false }));
       throw error;
     }
-  }, [state.gameId]);
+  }, [state.gameId, fetchLeaderboard]);
 
   // Reset game state
   const resetGame = useCallback(() => {
@@ -211,24 +240,6 @@ export function useHangmanGame() {
   // Basculer l'affichage de l'indice
   const toggleHint = useCallback(() => {
     setState(prevState => ({ ...prevState, showHint: !prevState.showHint }));
-  }, []);
-
-  // Fetch leaderboard data
-  const fetchLeaderboard = useCallback(async (difficulty?: string) => {
-    try {
-      setState(prevState => ({ ...prevState, isLoading: true }));
-      const leaderboardData = await getLeaderboard(difficulty);
-      setState(prevState => ({ 
-        ...prevState, 
-        leaderboard: leaderboardData,
-        isLoading: false 
-      }));
-      return leaderboardData;
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-      setState(prevState => ({ ...prevState, isLoading: false }));
-      throw error;
-    }
   }, []);
 
   // Submit score to leaderboard
